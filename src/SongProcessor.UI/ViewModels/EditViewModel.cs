@@ -22,130 +22,112 @@ public sealed class EditViewModel : ReactiveObject, IRoutableViewModel, IValidat
 	private readonly ISongLoader _Loader;
 	private readonly IMessageBoxManager _MessageBoxManager;
 	private readonly ObservableSong _Song;
-	private string _Artist;
-	private AspectRatio _AspectRatio;
-	private int _AudioTrack;
-	private string _ButtonText = "Save";
-	private string _CleanPath;
-	private string _End;
-	private int _Episode;
-	private bool _Has480p;
-	private bool _Has720p;
-	private bool _HasMp3;
-	private bool _IsSubmitted;
-	private string _Name;
-	private bool _ShouldIgnore;
-	private int _SongPosition;
-	private SongType _SongType;
-	private string _Start;
-	private int _VideoTrack;
-	private int _VolumeModifier;
 
-	public static IReadOnlyList<AspectRatio> AspectRatios { get; } = new[]
-	{
+	public static IReadOnlyList<AspectRatio> AspectRatios { get; } =
+	[
 		default,
 		new AspectRatio(4, 3),
 		new AspectRatio(16, 9),
-	};
-	public static IReadOnlyList<SongType> SongTypes { get; } = new[]
-	{
+	];
+	public static IReadOnlyList<SongType> SongTypes { get; } =
+	[
 		SongType.Opening,
 		SongType.Ending,
 		SongType.Insert,
-	};
+	];
 
 	public string Artist
 	{
-		get => _Artist;
-		set => this.RaiseAndSetIfChanged(ref _Artist, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public AspectRatio AspectRatio
 	{
-		get => _AspectRatio;
-		set => this.RaiseAndSetIfChanged(ref _AspectRatio, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int AudioTrack
 	{
-		get => _AudioTrack;
-		set => this.RaiseAndSetIfChanged(ref _AudioTrack, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public string ButtonText
 	{
-		get => _ButtonText;
-		set => this.RaiseAndSetIfChanged(ref _ButtonText, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = "Save";
 	public string CleanPath
 	{
-		get => _CleanPath;
-		set => this.RaiseAndSetIfChanged(ref _CleanPath, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public string End
 	{
-		get => _End;
-		set => this.RaiseAndSetIfChanged(ref _End, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int Episode
 	{
-		get => _Episode;
-		set => this.RaiseAndSetIfChanged(ref _Episode, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public bool Has480p
 	{
-		get => _Has480p;
-		set => this.RaiseAndSetIfChanged(ref _Has480p, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public bool Has720p
 	{
-		get => _Has720p;
-		set => this.RaiseAndSetIfChanged(ref _Has720p, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public bool HasMp3
 	{
-		get => _HasMp3;
-		set => this.RaiseAndSetIfChanged(ref _HasMp3, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public IScreen HostScreen { get; }
 	public bool IsSubmitted
 	{
-		get => _IsSubmitted;
-		set => this.RaiseAndSetIfChanged(ref _IsSubmitted, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public string Name
 	{
-		get => _Name;
-		set => this.RaiseAndSetIfChanged(ref _Name, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public bool ShouldIgnore
 	{
-		get => _ShouldIgnore;
-		set => this.RaiseAndSetIfChanged(ref _ShouldIgnore, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int SongPosition
 	{
-		get => _SongPosition;
-		set => this.RaiseAndSetIfChanged(ref _SongPosition, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public SongType SongType
 	{
-		get => _SongType;
-		set => this.RaiseAndSetIfChanged(ref _SongType, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public string Start
 	{
-		get => _Start;
-		set => this.RaiseAndSetIfChanged(ref _Start, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public string UrlPathSegment => "/edit";
 	public ValidationContext ValidationContext { get; } = new();
 	public int VideoTrack
 	{
-		get => _VideoTrack;
-		set => this.RaiseAndSetIfChanged(ref _VideoTrack, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int VolumeModifier
 	{
-		get => _VolumeModifier;
-		set => this.RaiseAndSetIfChanged(ref _VolumeModifier, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 
 	#region Commands
@@ -165,23 +147,23 @@ public sealed class EditViewModel : ReactiveObject, IRoutableViewModel, IValidat
 		_Loader = loader ?? throw new ArgumentNullException(nameof(loader));
 		_MessageBoxManager = messageBoxManager ?? throw new ArgumentNullException(nameof(messageBoxManager));
 
-		_Artist = _Song.Artist;
-		_AspectRatio = _Song.OverrideAspectRatio ?? AspectRatios[0];
-		_AudioTrack = _Song.OverrideAudioTrack;
-		_CleanPath = _Song.CleanPath!;
-		_End = _Song.End.ToString();
-		_Episode = _Song.Episode ?? 0;
-		_Has480p = !song.IsMissing(Status.Res480);
-		_Has720p = !song.IsMissing(Status.Res720);
-		_HasMp3 = !song.IsMissing(Status.Mp3);
-		_IsSubmitted = song.Status != Status.NotSubmitted;
-		_Name = _Song.Name;
-		_ShouldIgnore = _Song.ShouldIgnore;
-		_SongPosition = _Song.Type.Position ?? 0;
-		_SongType = _Song.Type.Type;
-		_Start = _Song.Start.ToString();
-		_VideoTrack = _Song.OverrideVideoTrack;
-		_VolumeModifier = (int)(_Song.VolumeModifier?.Value ?? 0);
+		Artist = _Song.Artist;
+		AspectRatio = _Song.OverrideAspectRatio ?? AspectRatios[0];
+		AudioTrack = _Song.OverrideAudioTrack;
+		CleanPath = _Song.CleanPath!;
+		End = _Song.End.ToString();
+		Episode = _Song.Episode ?? 0;
+		Has480p = !song.IsMissing(Status.Res480);
+		Has720p = !song.IsMissing(Status.Res720);
+		HasMp3 = !song.IsMissing(Status.Mp3);
+		IsSubmitted = song.Status != Status.NotSubmitted;
+		Name = _Song.Name;
+		ShouldIgnore = _Song.ShouldIgnore;
+		SongPosition = _Song.Type.Position ?? 0;
+		SongType = _Song.Type.Type;
+		Start = _Song.Start.ToString();
+		VideoTrack = _Song.OverrideVideoTrack;
+		VolumeModifier = (int)(_Song.VolumeModifier?.Value ?? 0);
 
 		this.ValidationRule(
 			x => x.Artist,

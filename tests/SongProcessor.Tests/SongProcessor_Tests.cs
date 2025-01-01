@@ -17,10 +17,10 @@ public sealed class SongProcessor_Tests : FFmpeg_TestsBase
 	[TestMethod]
 	public void CreateJobsNoSongs_Test()
 	{
-		var actual = ((ISongProcessor)_Processor).CreateJobs(new Anime[]
-		{
+		var actual = ((ISongProcessor)_Processor).CreateJobs(
+		[
 			CreateAnime(),
-		});
+		]);
 		actual.Should().BeEmpty();
 	}
 
@@ -35,39 +35,39 @@ public sealed class SongProcessor_Tests : FFmpeg_TestsBase
 			new VideoSongJob(anime, anime.Songs.Single(), 480),
 		};
 
-		var actual = ((ISongProcessor)_Processor).CreateJobs(new[] { anime });
+		var actual = ((ISongProcessor)_Processor).CreateJobs([anime]);
 		actual.Should().BeEquivalentTo(expected);
 	}
 
 	[TestMethod]
 	public void CreateJobsSongHasNoTimestamp_Test()
 	{
-		var actual = ((ISongProcessor)_Processor).CreateJobs(new Anime[]
-		{
-			CreateAnime(createSongs: () => new Song[]
-			{
+		var actual = ((ISongProcessor)_Processor).CreateJobs(
+		[
+			CreateAnime(createSongs: () =>
+			[
 				new()
 				{
 					Start = TimeSpan.FromSeconds(0),
 				},
-			}),
-		});
+			]),
+		]);
 		actual.Should().BeEmpty();
 	}
 
 	[TestMethod]
 	public void CreateJobsSongIsIgnored_Test()
 	{
-		var actual = ((ISongProcessor)_Processor).CreateJobs(new Anime[]
-		{
-			CreateAnime(createSongs: () => new Song[]
-			{
+		var actual = ((ISongProcessor)_Processor).CreateJobs(
+		[
+			CreateAnime(createSongs: () =>
+			[
 				new()
 				{
 					ShouldIgnore = true,
 				},
-			}),
-		});
+			]),
+		]);
 		actual.Should().BeEmpty();
 	}
 
@@ -81,7 +81,7 @@ public sealed class SongProcessor_Tests : FFmpeg_TestsBase
 			new VideoSongJob(anime, anime.Songs.Single(), anime.VideoInfo!.Height),
 		};
 
-		var actual = ((ISongProcessor)_Processor).CreateJobs(new[] { anime });
+		var actual = ((ISongProcessor)_Processor).CreateJobs([anime]);
 		actual.Should().BeEquivalentTo(expected);
 	}
 
@@ -95,7 +95,7 @@ public sealed class SongProcessor_Tests : FFmpeg_TestsBase
 			new VideoSongJob(anime, anime.Songs.Single(), 480),
 		};
 
-		var actual = ((ISongProcessor)_Processor).CreateJobs(new[] { anime });
+		var actual = ((ISongProcessor)_Processor).CreateJobs([anime]);
 		actual.Should().BeEquivalentTo(expected);
 	}
 
@@ -110,30 +110,30 @@ public sealed class SongProcessor_Tests : FFmpeg_TestsBase
 			new VideoSongJob(anime, anime.Songs.Single(), 720),
 		};
 
-		var actual = ((ISongProcessor)_Processor).CreateJobs(new[] { anime });
+		var actual = ((ISongProcessor)_Processor).CreateJobs([anime]);
 		actual.Should().BeEquivalentTo(expected);
 	}
 
 	[TestMethod]
 	public void CreateJobsVideoIsNull_Test()
 	{
-		var actual = ((ISongProcessor)_Processor).CreateJobs(new Anime[]
-		{
+		var actual = ((ISongProcessor)_Processor).CreateJobs(
+		[
 			CreateAnime(createVideoInfo: () => null),
-		});
+		]);
 		actual.Should().BeEmpty();
 	}
 
 	private Anime CreateAnime(int height)
 	{
-		return CreateAnime(createSongs: () => new Song[]
-		{
+		return CreateAnime(createSongs: () =>
+		[
 			new()
 			{
 				Start = TimeSpan.FromSeconds(1),
 				End = TimeSpan.FromSeconds(2),
 			},
-		}, createVideoInfo: () => VideoInfo with
+		], createVideoInfo: () => VideoInfo with
 		{
 			Height = height
 		});

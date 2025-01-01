@@ -19,10 +19,7 @@ public class Anime : IAnime
 
 	public Anime(string file, IAnimeBase other, VideoInfo? videoInfo)
 	{
-		if (file is null)
-		{
-			throw new ArgumentNullException(nameof(file));
-		}
+		ArgumentNullException.ThrowIfNull(file);
 		if (!Path.IsPathFullyQualified(file))
 		{
 			throw new ArgumentException("Must be an absolute path.", nameof(file));

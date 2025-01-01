@@ -9,47 +9,37 @@ namespace SongProcessor.UI.ViewModels;
 
 public sealed class MessageBoxViewModel<T> : ReactiveObject
 {
-	private string? _ButtonText = "Ok";
-	private bool _CanResize;
-	private T? _CurrentOption;
-	private bool _HasOptions;
-	private int _Height = UIUtils.MESSAGE_BOX_HEIGHT;
-	private IEnumerable<T>? _Options;
-	private string? _Text;
-	private string? _Title;
-	private int _Width = UIUtils.MESSAGE_BOX_WIDTH;
-
 	public string? ButtonText
 	{
-		get => _ButtonText;
-		set => this.RaiseAndSetIfChanged(ref _ButtonText, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = "Ok";
 	public bool CanResize
 	{
-		get => _CanResize;
-		set => this.RaiseAndSetIfChanged(ref _CanResize, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public T? CurrentOption
 	{
-		get => _CurrentOption;
-		set => this.RaiseAndSetIfChanged(ref _CurrentOption, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public bool HasOptions
 	{
-		get => _HasOptions;
-		private set => this.RaiseAndSetIfChanged(ref _HasOptions, value);
+		get;
+		private set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int Height
 	{
-		get => _Height;
-		set => this.RaiseAndSetIfChanged(ref _Height, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = UIUtils.MESSAGE_BOX_HEIGHT;
 	public IEnumerable<T>? Options
 	{
-		get => _Options;
+		get;
 		set
 		{
-			this.RaiseAndSetIfChanged(ref _Options, value);
+			this.RaiseAndSetIfChanged(ref field, value);
 			CurrentOption = default!;
 			HasOptions = value?.Any() ?? false;
 			ButtonText = HasOptions ? "Confirm" : "Ok";
@@ -57,19 +47,19 @@ public sealed class MessageBoxViewModel<T> : ReactiveObject
 	}
 	public string? Text
 	{
-		get => _Text;
-		set => this.RaiseAndSetIfChanged(ref _Text, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public string? Title
 	{
-		get => _Title;
-		set => this.RaiseAndSetIfChanged(ref _Title, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int Width
 	{
-		get => _Width;
-		set => this.RaiseAndSetIfChanged(ref _Width, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = UIUtils.MESSAGE_BOX_WIDTH;
 
 	#region Commands
 	public ReactiveCommand<MessageBox, Unit> Escape { get; }

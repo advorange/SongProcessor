@@ -88,7 +88,7 @@ public abstract class SongJob : ISongJob
 
 		var runTask = process.RunAsync(OutputMode.Async);
 		var tasks = token is null
-			? new[] { runTask }
+			? [runTask]
 			: new[] { runTask, process.WaitForExitAsync(token.Value) };
 
 		var task = await Task.WhenAny(tasks).ConfigureAwait(false);

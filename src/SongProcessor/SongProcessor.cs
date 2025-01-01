@@ -146,11 +146,11 @@ public sealed class SongProcessor : ISongProcessor
 		// Source is smaller than 480p, return mp3 and souce size (but treat as 480p status)
 		if (height < Resolution.RES_480.Size)
 		{
-			return new[]
-			{
+			return
+			[
 				Resolution.RES_MP3,
 				new(height, Status.Res480),
-			};
+			];
 		}
 		// Source is smaller than 720p, return mp3 and 480p
 		else if (height < Resolution.RES_720.Size)

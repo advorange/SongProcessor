@@ -5,7 +5,7 @@ using System.ComponentModel;
 
 namespace SongProcessor.UI;
 
-public class SortedObservableCollection<T>(IComparer<T> comparer, IEnumerable<T>? collection = null) : ObservableCollection<T>(collection ?? Array.Empty<T>())
+public class SortedObservableCollection<T>(IComparer<T> comparer, IEnumerable<T>? collection = null) : ObservableCollection<T>(collection ?? [])
 {
 	public IComparer<T> Comparer { get; } = comparer;
 

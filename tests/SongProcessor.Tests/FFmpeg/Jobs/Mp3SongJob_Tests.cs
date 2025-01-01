@@ -34,13 +34,13 @@ public sealed class Mp3SongJob_Tests : SongJob_TestsBase<Mp3SongJob>
 		actual.Should().NotBeEquivalentTo(@default);
 		actual.Should().BeEquivalentTo(@default with
 		{
-			Inputs = new FFmpegInput[]
-			{
+			Inputs =
+			[
 				new(job.Song.GetCleanFile(job.Anime)!, new Dictionary<string, string>
 				{
 					["to"] = job.Song.GetLength().ToString(),
 				}),
-			},
+			],
 		});
 	}
 
@@ -55,10 +55,10 @@ public sealed class Mp3SongJob_Tests : SongJob_TestsBase<Mp3SongJob>
 		actual.Should().NotBeEquivalentTo(@default);
 		actual.Should().BeEquivalentTo(@default with
 		{
-			Mapping = new[]
-			{
+			Mapping =
+			[
 				$"0:a:{job.Song.OverrideAudioTrack}",
-			},
+			],
 		});
 	}
 
@@ -128,7 +128,7 @@ public sealed class Mp3SongJob_Tests : SongJob_TestsBase<Mp3SongJob>
 		// Create a duplicate version to treat as a clean version
 		var cleanPath = await GetSingleFileProducedAsync(temp.Dir, job).ConfigureAwait(false);
 		var cleanVolumeInfo = await Gatherer.GetVolumeInfoAsync(cleanPath).ConfigureAwait(false);
-		AssertValidLength(cleanVolumeInfo.NSamples, VolumeInfo.NSamples);
+		AssertValidLength(cleanVolumeInfo!.NSamples, VolumeInfo.NSamples);
 
 		{
 			var movedPath = Path.Combine(
@@ -153,8 +153,8 @@ public sealed class Mp3SongJob_Tests : SongJob_TestsBase<Mp3SongJob>
 		var file = GetSingleFile(temp.Dir);
 		var newVolumeInfo = await Gatherer.GetVolumeInfoAsync(file).ConfigureAwait(false);
 		AssertValidLength(job, newVolumeInfo);
-		newVolumeInfo.MaxVolume.Should().BeLessThan(VolumeInfo.MaxVolume);
-		newVolumeInfo.MeanVolume.Should().BeLessThan(VolumeInfo.MeanVolume);
+		newVolumeInfo!.MaxVolume.Should().BeLessThan(VolumeInfo.MaxVolume);
+		newVolumeInfo!.MeanVolume.Should().BeLessThan(VolumeInfo.MeanVolume);
 	}
 
 	protected override Mp3SongJob GenerateJob(Anime anime, Song song)
@@ -163,15 +163,15 @@ public sealed class Mp3SongJob_Tests : SongJob_TestsBase<Mp3SongJob>
 	private static FFmpegArgs GenerateDefaultJobArgs(Mp3SongJob job)
 	{
 		return new FFmpegArgs(
-			Inputs: new FFmpegInput[]
-			{
+			Inputs:
+			[
 				new(job.Anime.GetSourceFile(), new Dictionary<string, string>
 				{
 					["ss"] = job.Song.Start.ToString(),
 					["to"] = job.Song.End.ToString(),
 				}),
-			},
-			Mapping: new[] { "0:a:0" },
+			],
+			Mapping: ["0:a:0"],
 			Args: Mp3SongJob.AudioArgs,
 			AudioFilters: null,
 			VideoFilters: null,
@@ -179,9 +179,9 @@ public sealed class Mp3SongJob_Tests : SongJob_TestsBase<Mp3SongJob>
 		);
 	}
 
-	private void AssertValidLength(SongJob job, VolumeInfo info)
+	private void AssertValidLength(SongJob job, VolumeInfo? info)
 	{
-		var duration = (double)info.NSamples;
+		var duration = (double)info!.NSamples;
 		var divisor = VideoInfo.Duration!.Value / job.Song.GetLength().TotalSeconds;
 		var expected = VolumeInfo.NSamples / divisor;
 		AssertValidLength(duration, expected);

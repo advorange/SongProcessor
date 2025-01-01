@@ -34,12 +34,12 @@ public sealed class VideoSongJob_Tests : SongJob_TestsBase<VideoSongJob>
 		actual.Should().NotBeEquivalentTo(@default);
 		actual.Should().BeEquivalentTo(@default with
 		{
-			Inputs = new FFmpegInput[]
-			{
+			Inputs =
+			[
 				@default.Inputs[0],
 				new(job.Song.GetCleanFile(job.Anime)!, null),
-			},
-			Mapping = new[] { "0:v:0", "1:a:0" },
+			],
+			Mapping = ["0:v:0", "1:a:0"],
 		});
 	}
 
@@ -143,11 +143,11 @@ public sealed class VideoSongJob_Tests : SongJob_TestsBase<VideoSongJob>
 		actual.Should().NotBeEquivalentTo(@default);
 		actual.Should().BeEquivalentTo(@default with
 		{
-			Mapping = new[]
-			{
+			Mapping =
+			[
 				$"0:a:{job.Song.OverrideAudioTrack}",
 				$"0:v:{job.Song.OverrideVideoTrack}",
-			},
+			],
 		});
 	}
 
@@ -271,15 +271,15 @@ public sealed class VideoSongJob_Tests : SongJob_TestsBase<VideoSongJob>
 	private static FFmpegArgs GenerateDefaultJobArgs(VideoSongJob job)
 	{
 		return new FFmpegArgs(
-			Inputs: new FFmpegInput[]
-			{
+			Inputs:
+			[
 				new(job.Anime.GetSourceFile(), new Dictionary<string, string>
 				{
 					["ss"] = job.Song.Start.ToString(),
 					["to"] = job.Song.End.ToString(),
 				}),
-			},
-			Mapping: new[] { "0:v:0", "0:a:0" },
+			],
+			Mapping: ["0:v:0", "0:a:0"],
 			Args: VideoSongJob.VideoArgs,
 			AudioFilters: null,
 			VideoFilters: null,

@@ -9,97 +9,81 @@ namespace SongProcessor.UI.Models;
 [DebuggerDisplay(ModelUtils.DEBUGGER_DISPLAY)]
 public sealed class ObservableSong : ReactiveObject, ISong
 {
-	private HashSet<int> _AlsoIn = null!;
-	private string _Artist = null!;
-	private string? _CleanPath;
-	private TimeSpan _End;
-	private int? _Episode;
-	private bool _IsVisible = true;
-	private string _Name = null!;
-	private AspectRatio? _OverrideAspectRatio;
-	private int _OverrideAudioTrack;
-	private int _OverrideVideoTrack;
-	private bool _ShouldIgnore;
-	private TimeSpan _Start;
-	private Status _Status;
-	private SongTypeAndPosition _Type;
-	private VolumeModifer? _VolumeModifier;
-
 	public HashSet<int> AlsoIn
 	{
-		get => _AlsoIn;
-		set => this.RaiseAndSetIfChanged(ref _AlsoIn, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = null!;
 	public string Artist
 	{
-		get => _Artist;
-		set => this.RaiseAndSetIfChanged(ref _Artist, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = null!;
 	public string? CleanPath
 	{
-		get => _CleanPath;
-		set => this.RaiseAndSetIfChanged(ref _CleanPath, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public TimeSpan End
 	{
-		get => _End;
-		set => this.RaiseAndSetIfChanged(ref _End, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int? Episode
 	{
-		get => _Episode;
-		set => this.RaiseAndSetIfChanged(ref _Episode, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public bool IsVisible
 	{
-		get => _IsVisible;
-		set => this.RaiseAndSetIfChanged(ref _IsVisible, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = true;
 	public string Name
 	{
-		get => _Name;
-		set => this.RaiseAndSetIfChanged(ref _Name, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = null!;
 	public AspectRatio? OverrideAspectRatio
 	{
-		get => _OverrideAspectRatio;
-		set => this.RaiseAndSetIfChanged(ref _OverrideAspectRatio, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int OverrideAudioTrack
 	{
-		get => _OverrideAudioTrack;
-		set => this.RaiseAndSetIfChanged(ref _OverrideAudioTrack, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int OverrideVideoTrack
 	{
-		get => _OverrideVideoTrack;
-		set => this.RaiseAndSetIfChanged(ref _OverrideVideoTrack, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public ObservableAnime Parent { get; }
 	public bool ShouldIgnore
 	{
-		get => _ShouldIgnore;
-		set => this.RaiseAndSetIfChanged(ref _ShouldIgnore, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public TimeSpan Start
 	{
-		get => _Start;
-		set => this.RaiseAndSetIfChanged(ref _Start, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public Status Status
 	{
-		get => _Status;
-		set => this.RaiseAndSetIfChanged(ref _Status, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public SongTypeAndPosition Type
 	{
-		get => _Type;
-		set => this.RaiseAndSetIfChanged(ref _Type, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public VolumeModifer? VolumeModifier
 	{
-		get => _VolumeModifier;
-		set => this.RaiseAndSetIfChanged(ref _VolumeModifier, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	IReadOnlySet<int> ISong.AlsoIn => AlsoIn;
 	private string DebuggerDisplay => this.GetFullName();

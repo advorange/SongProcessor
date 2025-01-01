@@ -16,14 +16,12 @@ namespace SongProcessor.UI.ViewModels;
 [DataContract]
 public sealed class MainViewModel : ReactiveObject, IScreen
 {
-	private RoutingState _Router = new();
-
 	[DataMember]
 	public RoutingState Router
 	{
-		get => _Router;
-		set => this.RaiseAndSetIfChanged(ref _Router, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = new();
 
 	#region Commands
 	public ReactiveCommand<Unit, Unit> Add { get; }

@@ -9,27 +9,23 @@ namespace SongProcessor.UI.ViewModels;
 [DataContract]
 public sealed class SearchTerms : ReactiveObject
 {
-	private string? _AnimeName;
-	private string? _ArtistName;
-	private string? _SongName;
-
 	[DataMember]
 	public string? AnimeName
 	{
-		get => _AnimeName;
-		set => this.RaiseAndSetIfChanged(ref _AnimeName, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	[DataMember]
 	public string? ArtistName
 	{
-		get => _ArtistName;
-		set => this.RaiseAndSetIfChanged(ref _ArtistName, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	[DataMember]
 	public string? SongName
 	{
-		get => _SongName;
-		set => this.RaiseAndSetIfChanged(ref _SongName, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 
 	public bool IsVisible(IAnime anime)

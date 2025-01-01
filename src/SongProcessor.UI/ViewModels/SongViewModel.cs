@@ -42,33 +42,25 @@ public sealed class SongViewModel : ReactiveObject, IRoutableViewModel, INavigat
 	private readonly ISongProcessor _Processor;
 	private readonly List<IDisposable> _Subscriptions = [];
 	private readonly IClipboard _SystemClipboard;
-	private Clipboard<ObservableSong>? _ClipboardSong;
-	private int _CurrentJob;
-	private string? _Directory;
-	private ProcessingData? _ProcessingData;
-	private int _QueuedJobs;
-	private SearchTerms _Search = new();
-	private AvaloniaList<object> _SelectedItems = [];
-	private SongVisibility _SongVisibility = new();
 
 	public ObservableCollection<ObservableAnime> Anime { get; } =
 		new SortedObservableCollection<ObservableAnime>(AnimeComparer.Instance);
 	public IObservable<bool> CanNavigate { get; }
 	public Clipboard<ObservableSong>? ClipboardSong
 	{
-		get => _ClipboardSong;
-		set => this.RaiseAndSetIfChanged(ref _ClipboardSong, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int CurrentJob
 	{
-		get => _CurrentJob;
-		set => this.RaiseAndSetIfChanged(ref _CurrentJob, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	[DataMember]
 	public string? Directory
 	{
-		get => _Directory;
-		set => this.RaiseAndSetIfChanged(ref _Directory, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public IScreen HostScreen { get; }
 	public bool IsBusy => _IsBusy.Value;
@@ -77,31 +69,31 @@ public sealed class SongViewModel : ReactiveObject, IRoutableViewModel, INavigat
 	public bool OnlySongsSelected => _OnlySongsSelected.Value;
 	public ProcessingData? ProcessingData
 	{
-		get => _ProcessingData;
-		set => this.RaiseAndSetIfChanged(ref _ProcessingData, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int QueuedJobs
 	{
-		get => _QueuedJobs;
-		set => this.RaiseAndSetIfChanged(ref _QueuedJobs, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	[DataMember]
 	public SearchTerms Search
 	{
-		get => _Search;
-		set => this.RaiseAndSetIfChanged(ref _Search, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = new();
 	public AvaloniaList<object> SelectedItems
 	{
-		get => _SelectedItems;
-		set => this.RaiseAndSetIfChanged(ref _SelectedItems, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = [];
 	[DataMember]
 	public SongVisibility SongVisibility
 	{
-		get => _SongVisibility;
-		set => this.RaiseAndSetIfChanged(ref _SongVisibility, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = new();
 	public string UrlPathSegment => "/songs";
 
 	#region Commands
@@ -359,7 +351,7 @@ public sealed class SongViewModel : ReactiveObject, IRoutableViewModel, INavigat
 
 		foreach (var path in paths)
 		{
-			VolumeInfo info;
+			VolumeInfo? info;
 			try
 			{
 				info = await _Gatherer.GetVolumeInfoAsync(path).ConfigureAwait(true);
@@ -372,7 +364,9 @@ public sealed class SongViewModel : ReactiveObject, IRoutableViewModel, INavigat
 				continue;
 			}
 
-			var text = $"Volume information for \"{Path.GetFileName(path)}\":" +
+			var text = info is null
+				? $"Unable to get volume information for \"{Path.GetFileName(path)}\"."
+				: $"Volume information for \"{Path.GetFileName(path)}\":" +
 				$"\nMean volume: {info.MeanVolume}dB" +
 				$"\nMax volume: {info.MaxVolume}dB";
 			_ = Dispatcher.UIThread.InvokeAsync(() =>

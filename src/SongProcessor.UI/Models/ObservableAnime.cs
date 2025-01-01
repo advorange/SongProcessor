@@ -11,65 +11,55 @@ namespace SongProcessor.UI.Models;
 [DebuggerDisplay(ModelUtils.DEBUGGER_DISPLAY)]
 public sealed class ObservableAnime : ReactiveObject, IAnime
 {
-	private string _AbsoluteInfoPath = null!;
-	private int _Id;
-	private bool _IsExpanded;
-	private bool _IsExpanderVisible;
-	private bool _IsVisible = true;
-	private string _Name = null!;
-	private ObservableCollection<ObservableSong> _Songs = null!;
-	private VideoInfo? _VideoInfo;
-	private int _Year;
-
 	public string AbsoluteInfoPath
 	{
-		get => _AbsoluteInfoPath;
-		set => this.RaiseAndSetIfChanged(ref _AbsoluteInfoPath, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public int Id
 	{
-		get => _Id;
-		set => this.RaiseAndSetIfChanged(ref _Id, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public bool IsExpanded
 	{
-		get => _IsExpanded;
-		set => this.RaiseAndSetIfChanged(ref _IsExpanded, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public bool IsExpanderVisible
 	{
-		get => _IsExpanderVisible;
-		set => this.RaiseAndSetIfChanged(ref _IsExpanderVisible, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public bool IsVisible
 	{
-		get => _IsVisible;
-		set => this.RaiseAndSetIfChanged(ref _IsVisible, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public string Name
 	{
-		get => _Name;
-		set => this.RaiseAndSetIfChanged(ref _Name, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public ObservableCollection<ObservableSong> Songs
 	{
-		get => _Songs;
-		set => this.RaiseAndSetIfChanged(ref _Songs, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public string? Source => this.GetRelativeOrAbsoluteSourceFile();
 	public VideoInfo? VideoInfo
 	{
-		get => _VideoInfo;
+		get;
 		set
 		{
-			this.RaiseAndSetIfChanged(ref _VideoInfo, value);
+			this.RaiseAndSetIfChanged(ref field, value);
 			this.RaisePropertyChanged(nameof(Source));
 		}
 	}
 	public int Year
 	{
-		get => _Year;
-		set => this.RaiseAndSetIfChanged(ref _Year, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	IReadOnlyList<ISong> IAnimeBase.Songs => Songs;
 	private string DebuggerDisplay => Name;

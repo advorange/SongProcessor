@@ -11,7 +11,7 @@ public static class UIUtils
 	public const string NO = "No";
 	public const string YES = "Yes";
 
-	public static ImmutableArray<string> YesNo { get; } = new[] { YES, NO }.ToImmutableArray();
+	public static ImmutableArray<string> YesNo { get; } = [YES, NO];
 
 	public static async Task<bool> ConfirmAsync(
 		this IMessageBoxManager manager,

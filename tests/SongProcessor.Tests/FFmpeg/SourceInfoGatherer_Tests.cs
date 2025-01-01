@@ -37,11 +37,8 @@ public sealed class SourceInfoGatherer_Tests : FFmpeg_TestsBase
 	[TestMethod]
 	public async Task GetAudioInfoNonExistentFile_Test()
 	{
-		Func<Task> getInfo = () => Gatherer.GetAudioInfoAsync(FAKE_FILE);
-		(await getInfo.Should()
-			.ThrowAsync<SourceInfoGatheringException>()
-			.ConfigureAwait(false))
-			.WithInnerException<FileNotFoundException>();
+		var result = await Gatherer.GetAudioInfoAsync(FAKE_FILE).ConfigureAwait(false);
+		result.Should().BeNull();
 	}
 
 	[TestMethod]
@@ -70,11 +67,8 @@ public sealed class SourceInfoGatherer_Tests : FFmpeg_TestsBase
 	[TestMethod]
 	public async Task GetVideoInfoNonExistentFile_Test()
 	{
-		Func<Task> getInfo = () => Gatherer.GetVideoInfoAsync(FAKE_FILE);
-		(await getInfo.Should()
-			.ThrowAsync<SourceInfoGatheringException>()
-			.ConfigureAwait(false))
-			.WithInnerException<FileNotFoundException>();
+		var result = await Gatherer.GetVideoInfoAsync(FAKE_FILE).ConfigureAwait(false);
+		result.Should().BeNull();
 	}
 
 	[TestMethod]
@@ -103,10 +97,7 @@ public sealed class SourceInfoGatherer_Tests : FFmpeg_TestsBase
 	[TestMethod]
 	public async Task GetVolumeInfoNonExistentFile_Test()
 	{
-		Func<Task> getInfo = () => Gatherer.GetVolumeInfoAsync(FAKE_FILE);
-		(await getInfo.Should()
-			.ThrowAsync<SourceInfoGatheringException>()
-			.ConfigureAwait(false))
-			.WithInnerException<FileNotFoundException>();
+		var result = await Gatherer.GetVolumeInfoAsync(FAKE_FILE).ConfigureAwait(false);
+		result.Should().BeNull();
 	}
 }

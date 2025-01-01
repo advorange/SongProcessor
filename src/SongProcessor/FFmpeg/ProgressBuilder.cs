@@ -21,8 +21,8 @@ internal sealed class ProgressBuilder
 
 	private Dictionary<string, string> _Values = new(ValidKeys.Count);
 
-	public static ImmutableHashSet<string> ValidKeys { get; } = ImmutableHashSet.Create(new[]
-	{
+	public static ImmutableHashSet<string> ValidKeys { get; } = ImmutableHashSet.Create(
+	[
 		BITRATE,
 		DROP_FRAMES,
 		DUP_FRAMES,
@@ -35,7 +35,7 @@ internal sealed class ProgressBuilder
 		SPEED,
 		STREAM00Q,
 		TOTAL_SIZE,
-	});
+	]);
 
 	public bool IsNextProgressReady(string kvp, [NotNullWhen(true)] out Progress? progress)
 	{

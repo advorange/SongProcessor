@@ -26,64 +26,56 @@ public sealed class AddViewModel : ReactiveObject, IRoutableViewModel
 	private readonly IEnumerable<IAnimeGatherer> _Gatherers;
 	private readonly ISongLoader _Loader;
 	private readonly IMessageBoxManager _MessageBoxManager;
-	private bool _AddEndings = true;
-	private bool _AddInserts = true;
-	private bool _AddOpenings = true;
-	private bool _AddSongs = true;
-	private string? _Directory;
-	private Exception? _Exception;
-	private int _Id = 1;
-	private string _SelectedGathererName;
 
 	[DataMember]
 	public bool AddEndings
 	{
-		get => _AddEndings;
-		set => this.RaiseAndSetIfChanged(ref _AddEndings, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = true;
 	[DataMember]
 	public bool AddInserts
 	{
-		get => _AddInserts;
-		set => this.RaiseAndSetIfChanged(ref _AddInserts, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = true;
 	[DataMember]
 	public bool AddOpenings
 	{
-		get => _AddOpenings;
-		set => this.RaiseAndSetIfChanged(ref _AddOpenings, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = true;
 	[DataMember]
 	public bool AddSongs
 	{
-		get => _AddSongs;
-		set => this.RaiseAndSetIfChanged(ref _AddSongs, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = true;
 	public ObservableCollection<IAnime> Anime { get; } = [];
 	[DataMember]
 	public string? Directory
 	{
-		get => _Directory;
-		set => this.RaiseAndSetIfChanged(ref _Directory, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public Exception? Exception
 	{
-		get => _Exception;
-		set => this.RaiseAndSetIfChanged(ref _Exception, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public IEnumerable<string> GathererNames { get; }
 	public IScreen HostScreen { get; }
 	[DataMember]
 	public int Id
 	{
-		get => _Id;
-		set => this.RaiseAndSetIfChanged(ref _Id, value);
-	}
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
+	} = 1;
 	[DataMember]
 	public string SelectedGathererName
 	{
-		get => _SelectedGathererName;
-		set => this.RaiseAndSetIfChanged(ref _SelectedGathererName, value);
+		get;
+		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public string UrlPathSegment => "/add";
 
@@ -103,7 +95,7 @@ public sealed class AddViewModel : ReactiveObject, IRoutableViewModel
 		_Loader = loader ?? throw new ArgumentNullException(nameof(loader));
 		_MessageBoxManager = messageBoxManager ?? throw new ArgumentNullException(nameof(messageBoxManager));
 		_Gatherers = gatherers ?? throw new ArgumentNullException(nameof(gatherers));
-		_SelectedGathererName = _Gatherers.First().Name;
+		SelectedGathererName = _Gatherers.First().Name;
 		GathererNames = _Gatherers.Select(x => x.Name);
 
 		var canAdd = this.WhenAnyValue(

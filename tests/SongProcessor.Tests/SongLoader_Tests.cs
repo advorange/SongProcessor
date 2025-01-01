@@ -70,8 +70,8 @@ public sealed class SongLoader_Tests : FFmpeg_TestsBase
 	{
 		using var temp = new TempDirectory();
 		var expected = CreateAnime(temp.Dir);
-		expected.Songs.AddRange(new Song[]
-		{
+		expected.Songs.AddRange(
+		[
 			new()
 			{
 				Name = "Song1",
@@ -84,7 +84,7 @@ public sealed class SongLoader_Tests : FFmpeg_TestsBase
 				Artist = "Artist2",
 				Type = SongType.Ed.Create(1),
 			},
-		});
+		]);
 
 		await _Loader.SaveAsync(expected).ConfigureAwait(false);
 		var actual = await _Loader.LoadAsync(expected.AbsoluteInfoPath).ConfigureAwait(false);

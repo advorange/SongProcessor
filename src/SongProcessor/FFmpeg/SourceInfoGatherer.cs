@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 
 namespace SongProcessor.FFmpeg;
 
-public sealed class SourceInfoGatherer : ISourceInfoGatherer
+public sealed partial class SourceInfoGatherer : ISourceInfoGatherer
 {
 	private const string PROPERTY = "property";
 	private const string VALUE = "value";
@@ -32,31 +32,29 @@ public sealed class SourceInfoGatherer : ISourceInfoGatherer
 	{
 		["volumedetect"] = "",
 	};
-	private static readonly Regex VolumeDetectRegex =
-		new(VOLUME_DETECT_PATTERN, RegexOptions.Compiled | RegexOptions.ExplicitCapture);
 
-	public Task<AudioInfo> GetAudioInfoAsync(string file, int track = 0)
+	public Task<AudioInfo?> GetAudioInfoAsync(string file, int track = 0)
 		=> GetInfoAsync<AudioInfo>(file, 'a', track);
 
-	public Task<VideoInfo> GetVideoInfoAsync(string file, int track = 0)
+	public Task<VideoInfo?> GetVideoInfoAsync(string file, int track = 0)
 		=> GetInfoAsync<VideoInfo>(file, 'v', track);
 
-	public async Task<VolumeInfo> GetVolumeInfoAsync(string file, int track = 0)
+	public async Task<VolumeInfo?> GetVolumeInfoAsync(string file, int track = 0)
 	{
 		if (!File.Exists(file))
 		{
-			throw FileNotFound(file, 'a');
+			return null;
 		}
 
 		var args = new FFmpegArgs(
-			Inputs: new FFmpegInput[]
-			{
+			Inputs:
+			[
 				new(file, null),
-			},
-			Mapping: new[]
-			{
+			],
+			Mapping:
+			[
 				$"0:a:{track}",
-			},
+			],
 			Args: _VolumeArgs,
 			AudioFilters: _VolumeAudioFilters,
 			VideoFilters: null,
@@ -75,7 +73,7 @@ public sealed class SourceInfoGatherer : ISourceInfoGatherer
 				return;
 			}
 
-			var match = VolumeDetectRegex.Match(e.Data);
+			var match = ParseVolume().Match(e.Data);
 			if (!match.Success)
 			{
 				return;
@@ -134,20 +132,17 @@ public sealed class SourceInfoGatherer : ISourceInfoGatherer
 		return options;
 	}
 
-	private static SourceInfoGatheringException FileNotFound(string file, char stream)
-		=> new(file, stream, new FileNotFoundException("File does not exist", file));
-
-	private static async Task<T> GetInfoAsync<T>(string file, char stream, int track)
+	private static async Task<T?> GetInfoAsync<T>(string file, char stream, int track)
 		where T : SourceInfo
 	{
 		if (!File.Exists(file))
 		{
-			throw FileNotFound(file, stream);
+			return null;
 		}
 
 		var args = new FFmpegArgs(
-			Inputs: Array.Empty<FFmpegInput>(),
-			Mapping: Array.Empty<string>(),
+			Inputs: [],
+			Mapping: [],
 			Args: new Dictionary<string, string>
 			{
 				["v"] = "quiet",
@@ -203,4 +198,7 @@ public sealed class SourceInfoGatherer : ISourceInfoGatherer
 		[property: JsonPropertyName("streams")]
 		T[] Streams
 	);
+
+	[GeneratedRegex(VOLUME_DETECT_PATTERN, RegexOptions.ExplicitCapture | RegexOptions.Compiled)]
+	private static partial Regex ParseVolume();
 }
