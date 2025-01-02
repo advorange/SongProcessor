@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SongProcessor.UI.ViewModels;
 
@@ -188,6 +189,7 @@ public sealed class SongViewModel : ReactiveObject, IRoutableViewModel, INavigat
 		CanNavigate = busy.CombineLatest(loaded, (x, y) => !(x || y));
 	}
 
+	[JsonConstructor]
 	private SongViewModel() : this(
 		Locator.Current.GetService<IScreen>()!,
 		Locator.Current.GetService<ISongLoader>()!,

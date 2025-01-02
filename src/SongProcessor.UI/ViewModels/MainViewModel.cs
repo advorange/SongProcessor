@@ -1,5 +1,7 @@
 ﻿using Avalonia.Input.Platform;
 
+using DynamicData;
+
 using ReactiveUI;
 
 using SongProcessor.FFmpeg;
@@ -10,17 +12,25 @@ using Splat;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SongProcessor.UI.ViewModels;
 
 [DataContract]
 public sealed class MainViewModel : ReactiveObject, IScreen
 {
+	public RoutingState Router => RouterWorkaround;
 	[DataMember]
-	public RoutingState Router
+	public RoutingStateWorkaround RouterWorkaround
 	{
 		get;
-		set => this.RaiseAndSetIfChanged(ref field, value);
+		init
+		{
+			field.NavigationStack.Clear();
+			field.NavigationStack.AddRange(value.NavigationStack);
+			this.RaisePropertyChanged(nameof(RouterWorkaround));
+			this.RaisePropertyChanged(nameof(Router));
+		}
 	} = new();
 
 	#region Commands
@@ -57,6 +67,7 @@ public sealed class MainViewModel : ReactiveObject, IScreen
 		}, CanGoBack());
 	}
 
+	[JsonConstructor]
 	private MainViewModel() : this(
 		Locator.Current.GetService<ISongLoader>()!,
 		Locator.Current.GetService<ISongProcessor>()!,

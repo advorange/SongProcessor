@@ -10,6 +10,7 @@ using Splat;
 using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace SongProcessor.UI.ViewModels;
 
@@ -107,6 +108,7 @@ public sealed class AddViewModel : ReactiveObject, IRoutableViewModel
 		SelectDirectory = ReactiveCommand.CreateFromTask(SelectDirectoryAsync);
 	}
 
+	[JsonConstructor]
 	private AddViewModel() : this(
 		Locator.Current.GetService<IScreen>()!,
 		Locator.Current.GetService<ISongLoader>()!,

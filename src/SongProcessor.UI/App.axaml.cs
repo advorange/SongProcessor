@@ -51,7 +51,7 @@ public class App : Application
 
 		// Set up suspension to save view model information
 		var suspension = new AutoSuspendHelper(ApplicationLifetime!);
-		var driver = new NewtonsoftJsonSuspensionDriver("appstate.json")
+		var driver = new JsonSuspensionDriver("appstate.json")
 		{
 #if DEBUG
 			DeleteOnInvalidState = false,

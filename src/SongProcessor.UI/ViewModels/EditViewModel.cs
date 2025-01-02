@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-using ReactiveUI;
+﻿using ReactiveUI;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
@@ -14,8 +12,6 @@ using System.Reactive.Linq;
 
 namespace SongProcessor.UI.ViewModels;
 
-// Never serialize this view/viewmodel since this data is related to folder structure
-[JsonConverter(typeof(NewtonsoftJsonSkipThis))]
 public sealed class EditViewModel : ReactiveObject, IRoutableViewModel, IValidatableViewModel
 {
 	private readonly ObservableAnime _Anime;
@@ -118,7 +114,7 @@ public sealed class EditViewModel : ReactiveObject, IRoutableViewModel, IValidat
 		set => this.RaiseAndSetIfChanged(ref field, value);
 	}
 	public string UrlPathSegment => "/edit";
-	public ValidationContext ValidationContext { get; } = new();
+	public IValidationContext ValidationContext { get; } = new ValidationContext();
 	public int VideoTrack
 	{
 		get;
