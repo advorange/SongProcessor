@@ -49,6 +49,10 @@ public class App : Application
 		Locator.CurrentMutable.RegisterConstant<ISongProcessor>(processor);
 		Locator.CurrentMutable.RegisterConstant<IEnumerable<IAnimeGatherer>>(gatherers);
 
+		Locator.CurrentMutable.Register<IViewFor<SongViewModel>>(() => new SongView());
+		Locator.CurrentMutable.Register<IViewFor<AddViewModel>>(() => new AddView());
+		Locator.CurrentMutable.Register<IViewFor<EditViewModel>>(() => new EditView());
+
 		// Set up suspension to save view model information
 		var suspension = new AutoSuspendHelper(ApplicationLifetime!);
 		var driver = new JsonSuspensionDriver("appstate.json")
@@ -71,12 +75,7 @@ public class App : Application
 		RxApp.SuspensionHost.SetupDefaultSuspendResume(driver);
 		suspension.OnFrameworkInitializationCompleted();
 
-		var state = screenWrapper.Screen = RxApp.SuspensionHost.GetAppState<MainViewModel>();
-		Locator.CurrentMutable.Register<IViewFor<SongViewModel>>(() => new SongView());
-		Locator.CurrentMutable.Register<IViewFor<AddViewModel>>(() => new AddView());
-		Locator.CurrentMutable.Register<IViewFor<EditViewModel>>(() => new EditView());
-
-		window.DataContext = state;
+		window.DataContext = screenWrapper.Screen = RxApp.SuspensionHost.GetAppState<MainViewModel>();
 		window.Show();
 		base.OnFrameworkInitializationCompleted();
 	}

@@ -2,11 +2,13 @@
 
 using SongProcessor.UI.ViewModels;
 
+using System.Collections.ObjectModel;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.Json.Serialization.Metadata;
 
 namespace SongProcessor.UI;
@@ -18,15 +20,19 @@ public class JsonSuspensionDriver(string Path) : ISuspensionDriver
 		IgnoreReadOnlyFields = true,
 		IgnoreReadOnlyProperties = true,
 		WriteIndented = true,
+		Converters =
+		{
+			new NavStackConverter(),
+		},
 		TypeInfoResolver = new DefaultJsonTypeInfoResolver
 		{
 			Modifiers =
 			{
 				UseDataContract,
 				UseTypeNamesForViewModels,
-				IgnoreCertainViewModels,
+				UseRoutingStateConstructor,
 			}
-		}
+		},
 	};
 	public bool DeleteOnInvalidState { get; set; }
 
@@ -50,31 +56,9 @@ public class JsonSuspensionDriver(string Path) : ISuspensionDriver
 
 	public IObservable<Unit> SaveState(object state)
 	{
-		using var fs = File.Create(Path);
-		JsonSerializer.Serialize(fs, state, _Options);
+		var text = JsonSerializer.Serialize(state, _Options);
+		File.WriteAllText(Path, text);
 		return Observable.Return(Unit.Default);
-	}
-
-	private static void IgnoreCertainViewModels(JsonTypeInfo typeInfo)
-	{
-		if (typeInfo.Type != typeof(RoutingStateWorkaround))
-		{
-			return;
-		}
-
-		// This will be an issue if settings are serialized at any time other than
-		// application shutdown
-		typeInfo.OnSerializing = static obj =>
-		{
-			var navStack = ((RoutingState)obj).NavigationStack;
-			for (var i = navStack.Count - 1; i >= 0; --i)
-			{
-				if (navStack[i].GetType() == typeof(EditViewModel))
-				{
-					navStack.RemoveAt(i);
-				}
-			}
-		};
 	}
 
 	private static void UseDataContract(JsonTypeInfo typeInfo)
@@ -84,6 +68,7 @@ public class JsonSuspensionDriver(string Path) : ISuspensionDriver
 			return;
 		}
 
+		// System.Text.Json does not automatically abide by DataContract/Member
 		foreach (var propertyInfo in typeInfo.Properties)
 		{
 			if (propertyInfo.AttributeProvider is not ICustomAttributeProvider provider
@@ -95,6 +80,18 @@ public class JsonSuspensionDriver(string Path) : ISuspensionDriver
 		}
 	}
 
+	private static void UseRoutingStateConstructor(JsonTypeInfo typeInfo)
+	{
+		if (typeInfo.Type != typeof(RoutingState))
+		{
+			return;
+		}
+
+		// System.Text.Json does not consider a ctor with only optional parameters
+		// to be a parameterless constructor
+		typeInfo.CreateObject = () => new RoutingState();
+	}
+
 	private static void UseTypeNamesForViewModels(JsonTypeInfo typeInfo)
 	{
 		if (typeInfo.Type != typeof(IRoutableViewModel))
@@ -102,6 +99,7 @@ public class JsonSuspensionDriver(string Path) : ISuspensionDriver
 			return;
 		}
 
+		// This actually is an improvement over Newtonsoft
 		typeInfo.PolymorphismOptions = new()
 		{
 			DerivedTypes =
@@ -111,6 +109,23 @@ public class JsonSuspensionDriver(string Path) : ISuspensionDriver
 			},
 		};
 	}
-}
 
-public class RoutingStateWorkaround : RoutingState;
+	private sealed class NavStackConverter : JsonConverter<ObservableCollection<IRoutableViewModel>>
+	{
+		public override ObservableCollection<IRoutableViewModel>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+			=> new(JsonSerializer.Deserialize<IRoutableViewModel[]>(ref reader, options) ?? []);
+
+		public override void Write(Utf8JsonWriter writer, ObservableCollection<IRoutableViewModel> value, JsonSerializerOptions options)
+		{
+			writer.WriteStartArray();
+			foreach (var vm in value)
+			{
+				if (vm is not EditViewModel)
+				{
+					JsonSerializer.Serialize(writer, vm, options);
+				}
+			}
+			writer.WriteEndArray();
+		}
+	}
+}

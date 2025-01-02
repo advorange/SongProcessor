@@ -19,16 +19,17 @@ namespace SongProcessor.UI.ViewModels;
 [DataContract]
 public sealed class MainViewModel : ReactiveObject, IScreen
 {
-	public RoutingState Router => RouterWorkaround;
 	[DataMember]
-	public RoutingStateWorkaround RouterWorkaround
+	public RoutingState Router
 	{
 		get;
+		// Due to certain design choices I have made, changing the RoutingState
+		// instance causes routing to not work. Buttons can be clicked which
+		// causes the NavigationStack to update but the UI does not.
 		init
 		{
 			field.NavigationStack.Clear();
-			field.NavigationStack.AddRange(value.NavigationStack);
-			this.RaisePropertyChanged(nameof(RouterWorkaround));
+			field.NavigationStack.AddRange(value?.NavigationStack ?? []);
 			this.RaisePropertyChanged(nameof(Router));
 		}
 	} = new();
