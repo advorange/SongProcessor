@@ -36,7 +36,7 @@ public static class MiscConverters
 		{
 			return _Cyan;
 		}
-		if ((x & Status.None) != 0)
+		if ((x & Status.Submitted) != 0)
 		{
 			return _Yellow;
 		}

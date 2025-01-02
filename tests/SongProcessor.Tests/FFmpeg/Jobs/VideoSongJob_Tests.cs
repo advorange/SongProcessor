@@ -179,7 +179,7 @@ public sealed class VideoSongJob_Tests : SongJob_TestsBase<VideoSongJob>
 
 		var file = await GetSingleFileProducedAsync(temp.Dir, job).ConfigureAwait(false);
 		var newVideoInfo = await Gatherer.GetVideoInfoAsync(file).ConfigureAwait(false);
-		AssertValidLength(job, newVideoInfo);
+		AssertValidLength(job, newVideoInfo!);
 
 		job.AlreadyExists.Should().BeTrue();
 		var result = await job.ProcessAsync().ConfigureAwait(false);
@@ -217,7 +217,7 @@ public sealed class VideoSongJob_Tests : SongJob_TestsBase<VideoSongJob>
 		// Create a duplicate version to treat as a clean version
 		var cleanPath = await GetSingleFileProducedAsync(temp.Dir, job).ConfigureAwait(false);
 		var cleanVideoInfo = await Gatherer.GetVideoInfoAsync(cleanPath).ConfigureAwait(false);
-		AssertValidLength(job, cleanVideoInfo);
+		AssertValidLength(job, cleanVideoInfo!);
 
 		{
 			var movedPath = Path.Combine(
@@ -241,11 +241,11 @@ public sealed class VideoSongJob_Tests : SongJob_TestsBase<VideoSongJob>
 
 		var file = GetSingleFile(temp.Dir);
 		var newVolumeInfo = await Gatherer.GetVolumeInfoAsync(file).ConfigureAwait(false);
-		newVolumeInfo.MaxVolume.Should().BeLessThan(VolumeInfo.MaxVolume);
+		newVolumeInfo!.MaxVolume.Should().BeLessThan(VolumeInfo.MaxVolume);
 		newVolumeInfo.MeanVolume.Should().BeLessThan(VolumeInfo.MeanVolume);
 
 		var newVideoInfo = await Gatherer.GetVideoInfoAsync(file).ConfigureAwait(false);
-		AssertValidLength(job, newVideoInfo);
+		AssertValidLength(job, newVideoInfo!);
 	}
 
 	protected override Anime CreateAnime(string directory)

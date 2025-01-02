@@ -4,7 +4,7 @@ namespace SongProcessor.Gatherers;
 
 public static class GathererUtils
 {
-	public static HttpClient DefaultGathererClient => field ??= CreateClient();
+	public static HttpClient DefaultGathererClient { get; } = CreateClient();
 
 	public static FormatException InvalidPropertyProvided(
 		this IAnimeGatherer gatherer,

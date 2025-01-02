@@ -44,7 +44,7 @@ public sealed class Program
 
 		static void DisplayStatusItems(Status status)
 		{
-			const Status ALL = Status.None | Status.Mp3 | Status.Res480 | Status.Res720;
+			const Status ALL = Status.Submitted | Status.Mp3 | Status.Res480 | Status.Res720;
 
 			static void DisplayStatusItem(Status status, Status item, string rep)
 			{
