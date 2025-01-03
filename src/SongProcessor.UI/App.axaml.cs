@@ -28,14 +28,8 @@ public class App : Application
 		};
 
 		var window = new MainWindow();
-		var messageBoxManager = new MessageBoxManager(window);
-		// Create a wrapper for the not yet created state
-		// so when deserializing the saved view models IScreen isn't null
 		var screenWrapper = new HostScreenWrapper();
-		Locator.CurrentMutable.RegisterConstant(window.Clipboard);
-		Locator.CurrentMutable.RegisterConstant<IMessageBoxManager>(messageBoxManager);
-		Locator.CurrentMutable.RegisterConstant<IScreen>(screenWrapper);
-
+		var mbManager = new MessageBoxManager(window);
 		var gatherer = new SourceInfoGatherer();
 		var loader = new SongLoader(gatherer);
 		var processor = new SongProcessor();
@@ -44,6 +38,10 @@ public class App : Application
 				new ANNGatherer(),
 				new AniDBGatherer()
 		};
+
+		Locator.CurrentMutable.RegisterConstant(window.Clipboard);
+		Locator.CurrentMutable.RegisterConstant<IScreen>(screenWrapper);
+		Locator.CurrentMutable.RegisterConstant<IMessageBoxManager>(mbManager);
 		Locator.CurrentMutable.RegisterConstant<ISourceInfoGatherer>(gatherer);
 		Locator.CurrentMutable.RegisterConstant<ISongLoader>(loader);
 		Locator.CurrentMutable.RegisterConstant<ISongProcessor>(processor);
@@ -68,7 +66,7 @@ public class App : Application
 				processor,
 				gatherer,
 				window.Clipboard!,
-				messageBoxManager,
+				mbManager,
 				gatherers
 			);
 		};
